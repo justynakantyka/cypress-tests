@@ -1,38 +1,35 @@
 describe('Login Page', () => {
-  const VALID_USERNAME = 'standard_user';
-  const VALID_PASSWORD = 'secret_sauce';
 
-  beforeEach(() => {
+  beforeEach(function() {
     cy.visit('/');
+    cy.fixture('credentials').then(function(testdata){
+      this.user = testdata;
+    });
   });
 
-  it('should login user with valid credentials', () => {
-    cy.login(VALID_USERNAME, VALID_PASSWORD);
+  it('should login user with valid credentials', function(){
+    
+    console.log(this.user);
+    cy.login(this.user.validUsername, this.user.validPassword);
     cy.url().should('be.equal', 'https://www.saucedemo.com/inventory.html')
   });
 
-  it('should display error for blocked user', () => {
-    const BLOCKED_USERNAME = 'locked_out_user';
-
-    cy.login(BLOCKED_USERNAME, VALID_PASSWORD);
+  it('should display error for blocked user', function(){
+    cy.login(this.user.blockedUsername, this.user.validPassword);
     cy.get('[data-test="error"]').should('have.text', 'Epic sadface: Sorry, this user has been locked out.');
   });
 
-  it('should display error for wrong username', () => {
-    const WRONG_USERNAME = 'wrong_username';
-
-    cy.login(WRONG_USERNAME, VALID_PASSWORD);
+  it('should display error for wrong username', function(){
+    cy.login(this.user.wrongUsername, this.user.validPassword);
     cy.get('[data-test="error"]').should('have.text', 'Epic sadface: Username and password do not match any user in this service');
   });
 
-  it('should display error for wrong password', () => {
-    const WRONG_PASSWORD = 'wrong_password';
-
-    cy.login(VALID_USERNAME, WRONG_PASSWORD);
+  it('should display error for wrong password', function(){
+    cy.login(this.user.validUsername, this.user.wrongPassword);
     cy.get('[data-test="error"]').should('have.text', 'Epic sadface: Username and password do not match any user in this service');
   });
 
-  it('should display error when user tries to access inventory page without logging in', () => {
+  it('should display error when user tries to access inventory page without logging in', function(){
     cy.visit('/?/inventory.html', { failOnStatusCode: false });
 
     cy.location("pathname").should("equal", "/");

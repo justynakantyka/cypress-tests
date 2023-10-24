@@ -17,7 +17,7 @@ Cypress.Commands.add('login', (email, password) => {
 });
 
 Cypress.Commands.add('loginCookieInjection', () => {
-    cy.visit('/');
+    cy.visit('/', { failOnStatusCode: false });
     cy.setCookie('session-username', 'standard_user');
     cy.reload();
 })
