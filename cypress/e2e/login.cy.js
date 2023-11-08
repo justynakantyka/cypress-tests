@@ -1,5 +1,4 @@
 describe('Login Page', () => {
-
   beforeEach(function() {
     cy.visit('/');
     cy.fixture('credentials').then(function(testdata){
@@ -8,8 +7,6 @@ describe('Login Page', () => {
   });
 
   it('should login user with valid credentials', function(){
-    
-    console.log(this.user);
     cy.login(this.user.validUsername, this.user.validPassword);
     cy.url().should('be.equal', 'https://www.saucedemo.com/inventory.html')
   });
